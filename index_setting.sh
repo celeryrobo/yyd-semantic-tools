@@ -4,9 +4,9 @@ host="localhost:9200"
 headers="Content-Type: application/json"
 
 services=(
-    "song|dicCommon,dicSong,dicSonger"
-    "story|dicCommon,dicStoryName"
-    "poetry|dicCommon,dicPoetrySentence,dicPoetryTitle"
+    "music|dicCommon"
+    "story|dicCommon"
+    "poetry|dicCommon"
 )
 
 for index in ${services[@]}; do
@@ -14,12 +14,20 @@ for index in ${services[@]}; do
     curl -XDELETE "${host}/${arg}"
 done
 
+#curl -XDELETE "${host}/yyd"
+
 python init_service.py init
 
 curl -XPOST "${host}/_all/_close"
 for service in ${services[@]}; do
     args=($(echo ${service} | tr '|' ' '))
     curl -H "${headers}" -XPUT "${host}/${args[0]}/_settings" -d "{
+      \"similarity\": {
+        \"yyd_bm25\": {
+          \"type\": \"BM25\",
+          \"b\": 0
+        }
+      },
       \"analysis\": {
         \"tokenizer\": {
           \"${args[0]}_ansj\": {
@@ -47,7 +55,7 @@ for service in ${services[@]}; do
 done
 curl -XPOST "${host}/_all/_open"
 
-sleep 0.2
+#sleep 0.2
 
 for item in ${services[@]}; do
     arg=${item%%|*}
@@ -56,7 +64,8 @@ for item in ${services[@]}; do
             \"properties\": {
                 \"template\":{
                     \"analyzer\": \"${arg}_ansj\",
-                    \"type\": \"text\"
+                    \"type\": \"text\",
+                    \"similarity\": \"yyd_bm25\"
                 }
             }
         }

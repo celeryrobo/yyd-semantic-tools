@@ -6,18 +6,15 @@ from elasticsearch_dsl.connections import connections
 connections.create_connection(hosts = ["127.0.0.1:9200"])
 
 class Base(DocType):
+#    template = Text(analyzer="dic_ansj", search_analyzer="dic_ansj")
     orgTemplate = Text()
     intent = Text()
     params = Text()
 
-    class Meta:
-        doc_type = "default"
-        index = "base"
-
 class Song(Base):
     class Meta:
         doc_type = "default"
-        index = "song"
+        index = "music"
 
 class Story(Base):
     class Meta:
@@ -74,25 +71,28 @@ if sys.argv[1] == "dic":
         ((3, "我想听歌", "randomPlay"), {}),
         ((4, "我想听{name}", "bySong"), {"name":"song"}),
         ((5, "唱首{name}的歌", "bySonger"), {"name":"songer"}),
+        ((6, "我要听{name}", "bySong"), {"name":"song"}),
+        ((7, "我想听一首{name}", "bySong"), {"name":"song"}),
+        ((8, "我要听一首{name}", "bySong"), {"name":"song"}),
     ]
     stories = [
     # story
-        ((6, "说个{name}的故事", "byStoryName"), {"name":"storyName"}),
-        ((7, "我想听{name}", "byStoryName"), {"name":"storyName"}),
-        ((8, "我想听故事", "randomPlay"), {}),
+        ((11, "说个{name}的故事", "byStoryName"), {"name":"storyName"}),
+        ((12, "我想听{name}", "byStoryName"), {"name":"storyName"}),
+        ((13, "我想听故事", "randomPlay"), {}),
     ]
     
     poetries = [
     # poetry
-        ((9, "{sentence}是谁写的", "autherBySentence"), {"sentence":"poetrySentence"}),
-        ((10, "{sentence}是哪首诗中的诗句", "byPoetrySentence"), {"sentence":"poetrySentence"}),
-        ((11, "{sentence}的下一句", "nextSentence"), {"sentence":"poetrySentence"}),
-        ((12, "{sentence}的上一句", "prevSentence"), {"sentence":"poetrySentence"}),
-        ((13, "背一首唐诗{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
-        ((14, "背一首{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
-        ((15, "背一首唐诗", "randomPlay"), {}),
-        ((16, "我想听{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
-        ((17, "我想听{sentence}", "byPoetrySentence"), {"sentence":"poetrySentence"}),
+        ((21, "是谁写的{sentence}", "autherBySentence"), {"sentence":"poetrySentence"}),
+        ((22, "{sentence}是哪首诗中的诗句", "byPoetrySentence"), {"sentence":"poetrySentence"}),
+        ((23, "{sentence}的下一句", "nextSentence"), {"sentence":"poetrySentence"}),
+        ((24, "{sentence}的上一句", "prevSentence"), {"sentence":"poetrySentence"}),
+        ((25, "背一首唐诗{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
+        ((26, "背一首{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
+        ((27, "背一首唐诗", "randomPlay"), {}),
+        ((28, "我想听{title}", "byPoetryTitle"), {"title":"poetryTitle"}),
+        ((29, "我想听{sentence}", "byPoetrySentence"), {"sentence":"poetrySentence"}),
     ]
     
     for config, params in songs:

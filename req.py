@@ -2,11 +2,9 @@
 
 import requests
 
-service = "song"
-
-resp = requests.get("http://127.0.0.1:9200/" + service + "/_analyze", json = {
-    "analyzer" : service + "_ansj",
-    "text" : "我想听歌",
+resp = requests.get("http://127.0.0.1:9200/_analyze", json = {
+    "analyzer" : "dic_ansj",
+    "text" : "我想听我的一天",
 })
 
 rs = resp.json()
